@@ -1,0 +1,56 @@
+@startuml
+
+actor Etudiant
+participant "Interface CampusMind" as UI
+participant "Service Humeur" as HumeurService
+participant "Analyse Emotionnelle (IA)" as IA
+participant "Base de données" as DB
+participant "Service Recommandation" as Reco
+
+' === Saisie de l'humeur ===
+Etudiant -> UI : saisir humeur (niveau, commentaire)
+UI -> HumeurService : enregistrerHumeur(data)
+
+' === Sauvegarde en base ===
+HumeurService -> DB : insert humeur
+DB --> HumeurService : confirmation sauvegarde
+HumeurService --> UI : confirmation enregistrement
+
+' === Analyse émotionnelle ===
+UI -> IA : analyser humeur + historique(idEtudiant)
+IA -> DB : récupérer historique émotions
+DB --> IA : données historiques
+
+IA --> UI : score émotionnel + état (positif / neutre / critique)
+
+' === Cas selon l'état ===
+alt état critique détecté
+    IA -> Reco : générer alerte + aide urgente
+    Reco --> UI : recommandations urgentes
+    UI --> Etudiant : notification soutien psychologique
+
+else état normal
+    IA -> Reco : générer recommandations standards
+    Reco --> UI : conseils personnalisés
+    UI --> Etudiant : affichage recommandations bien-être
+end
+
+' === Option : ajout commentaire supplémentaire ===
+opt commentaire ajouté
+    Etudiant -> UI : ajouter commentaire humeur
+    UI -> HumeurService : mettre à jour commentaire
+    HumeurService -> DB : update humeur
+    DB --> HumeurService : confirmation
+    HumeurService --> UI : mise à jour OK
+end
+
+' === Boucle : suivi quotidien ===
+loop chaque jour
+    Etudiant -> UI : nouvelle saisie humeur
+    UI -> HumeurService : enregistrer
+    HumeurService -> DB : save
+    DB --> HumeurService : OK
+    HumeurService --> UI : confirmé
+end
+
+@enduml

@@ -1,0 +1,72 @@
+@startuml
+left to right direction
+
+' === Acteurs ===
+actor Utilisateur
+actor Etudiant
+actor Coach
+actor Administrateur
+
+' Héritage
+Utilisateur <|-- Etudiant
+Utilisateur <|-- Coach
+Utilisateur <|-- Administrateur
+
+' === Système ===
+rectangle "Application CampusMind" {
+
+' --- Authentification ---
+    usecase "S'inscrire" as UC1
+    usecase "Se connecter" as UC2
+    usecase "Se déconnecter" as UC3
+    usecase "Réinitialiser mot de passe" as UC4
+
+' --- Suivi émotionnel ---
+    usecase "Saisir humeur" as UC5
+    usecase "Consulter historique" as UC6
+    usecase "Analyser état émotionnel" as UC7
+
+' --- Recommandations ---
+    usecase "Recevoir recommandations" as UC8
+    usecase "Personnaliser recommandations" as UC9
+
+' --- Coaching ---
+    usecase "Demander séance coaching" as UC10
+    usecase "Planifier séance" as UC11
+    usecase "Consulter coach" as UC12
+
+' --- Administration ---
+    usecase "Gérer utilisateurs" as UC13
+    usecase "Gérer contenu" as UC14
+    usecase "Consulter statistiques" as UC15
+}
+
+' === Relations Acteurs / UC ===
+Utilisateur --> UC1
+Utilisateur --> UC2
+Utilisateur --> UC3
+Utilisateur --> UC4
+
+Etudiant --> UC5
+Etudiant --> UC6
+Etudiant --> UC8
+Etudiant --> UC10
+Etudiant --> UC12
+
+Coach --> UC11
+Coach --> UC12
+
+Administrateur --> UC13
+Administrateur --> UC14
+Administrateur --> UC15
+
+' === Relations include ===
+UC5 --> UC7 : <<include>>
+UC8 --> UC9 : <<include>>
+UC10 --> UC11 : <<include>>
+
+' === Relations extend ===
+UC2 <.. UC4 : <<extend>>
+UC8 <.. UC6 : <<extend>>
+
+@enduml
