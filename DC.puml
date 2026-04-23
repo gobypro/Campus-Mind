@@ -1,72 +1,96 @@
 @startuml
-left to right direction
+skinparam classAttributeIconSize 0
 
-' === Acteurs ===
-actor Utilisateur
-actor Etudiant
-actor Coach
-actor Administrateur
-
-' Héritage
-Utilisateur <|-- Etudiant
-Utilisateur <|-- Coach
-Utilisateur <|-- Administrateur
-
-' === Système ===
-rectangle "Application CampusMind" {
-
-  ' --- Authentification ---
-  usecase "S'inscrire" as UC1
-  usecase "Se connecter" as UC2
-  usecase "Se déconnecter" as UC3
-  usecase "Réinitialiser mot de passe" as UC4
-
-  ' --- Suivi émotionnel ---
-  usecase "Saisir humeur" as UC5
-  usecase "Consulter historique" as UC6
-  usecase "Analyser état émotionnel" as UC7
-
-  ' --- Recommandations ---
-  usecase "Recevoir recommandations" as UC8
-  usecase "Personnaliser recommandations" as UC9
-
-  ' --- Coaching ---
-  usecase "Demander séance coaching" as UC10
-  usecase "Planifier séance" as UC11
-  usecase "Consulter coach" as UC12
-
-  ' --- Administration ---
-  usecase "Gérer utilisateurs" as UC13
-  usecase "Gérer contenu" as UC14
-  usecase "Consulter statistiques" as UC15
+' =========================
+' 🔵 CLASSES COMMUNES
+' =========================
+class Utilisateur #ADD8E6 {
+  -id: int
+  -nom: String
+  -email: String
+  -motDePasse: String
+  +seConnecter()
+  +seDeconnecter()
 }
 
-' === Relations Acteurs / UC ===
-Utilisateur --> UC1
-Utilisateur --> UC2
-Utilisateur --> UC3
-Utilisateur --> UC4
+class Etudiant #ADD8E6 {
+  -niveau: String
+  +saisirHumeur()
+  +consulterHistorique()
+}
 
-Etudiant --> UC5
-Etudiant --> UC6
-Etudiant --> UC8
-Etudiant --> UC10
-Etudiant --> UC12
+class Coach #ADD8E6 {
+  -specialite: String
+  +planifierSeance()
+}
 
-Coach --> UC11
-Coach --> UC12
+class Administrateur #ADD8E6 {
+  +gererUtilisateurs()
+  +consulterStatistiques()
+}
 
-Administrateur --> UC13
-Administrateur --> UC14
-Administrateur --> UC15
+Utilisateur <|-- Etudiant : hérite
+Utilisateur <|-- Coach : hérite
+Utilisateur <|-- Administrateur : hérite
 
-' === Relations include ===
-UC5 --> UC7 : <<include>>
-UC8 --> UC9 : <<include>>
-UC10 --> UC11 : <<include>>
 
-' === Relations extend ===
-UC2 <.. UC4 : <<extend>>
-UC8 <.. UC6 : <<extend>>
+' =========================
+' 🟢 SUIVI ÉMOTIONNEL
+' =========================
+class Humeur #90EE90 {
+  -date: Date
+  -niveau: int
+  +enregistrer()
+}
+
+class Historique #90EE90 {
+  -listeHumeurs: List
+  +afficher()
+}
+
+class AnalyseEmotion #90EE90 {
+  +analyser()
+}
+
+Etudiant "1" -- "0..*" Humeur : saisit
+Etudiant "1" -- "1" Historique : possède
+Historique "1" *-- "0..*" Humeur : contient
+AnalyseEmotion "1" o-- "0..*" Humeur : analyse
+
+
+' =========================
+' 🟡 RECOMMANDATION
+' =========================
+class Recommandation #FFD700 {
+  -contenu: String
+  +generer()
+}
+
+Etudiant "1" -- "0..*" Recommandation : reçoit
+Recommandation --> AnalyseEmotion : utilise
+
+
+' =========================
+' 🟣 COACHING
+' =========================
+class SeanceCoaching #D8BFD8 {
+  -date: Date
+  -statut: String
+  +planifier()
+}
+
+Etudiant "1" -- "0..*" SeanceCoaching : demande
+Coach "1" -- "0..*" SeanceCoaching : gère
+
+
+' =========================
+' 🔴 ADMINISTRATION
+' =========================
+class Statistique #FFB6C1 {
+  +calculer()
+}
+
+Administrateur --> Utilisateur : gère
+Administrateur --> Statistique : consulte
 
 @enduml
