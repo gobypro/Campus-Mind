@@ -41,9 +41,33 @@ public class Historique {
 
     /**
      * Analyse et affiche les tendances émotionnelles détectées
+     * 
+     * @param humeurs Liste des humeurs à analyser
      */
-    public void analyserTendances() {
-        // TODO: Implémenter l'algorithme d'analyse des données (moyenne, pics, baisses)
+    public void analyserTendances(List<Humeur> humeurs) {
+        if (humeurs == null || humeurs.isEmpty()) {
+            System.out.println("Aucune donnée pour analyser les tendances.");
+            return;
+        }
+
+        double somme = 0;
+        for (Humeur h : humeurs) {
+            somme += convertirEtatEnNiveau(h.getEtat());
+        }
+        
+        double moyenne = somme / humeurs.size();
+        
+        System.out.println("\n=== Analyse des Tendances ===");
+        System.out.printf("Moyenne de l'humeur : %.2f/5%n", moyenne);
+        
+        if (moyenne < 2.5) {
+            System.out.println("⚠️ ALERTE : Tendance très basse. Prenez du temps pour vous ou consultez un coach.");
+        } else if (moyenne > 4.0) {
+            System.out.println("🌟 FÉLICITATIONS : Tendance extrêmement positive ! Continuez comme ça.");
+        } else {
+            System.out.println("✓ Tendance générale : Stable et équilibrée.");
+        }
+        System.out.println("=============================\n");
     }
 
     /**
