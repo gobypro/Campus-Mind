@@ -76,7 +76,7 @@ public class Historique {
      * @param humeurs Liste des humeurs à afficher
      */
     public void afficherGraphiqueHumeur(List<Humeur> humeurs) {
-        // TODO: Appeler la génération de graphique
+        genererGraphique(humeurs);
     }
 
     /**
