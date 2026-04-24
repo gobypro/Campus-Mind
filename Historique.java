@@ -38,13 +38,24 @@ public class Historique {
      * @return Un niveau de 1 à 5
      */
     private int convertirEtatEnNiveau(String etat) {
-        return switch (etat) {
-            case "Très heureux" -> 5;
-            case "Heureux"      -> 4;
-            case "Neutre"       -> 3;
-            case "Triste"       -> 2;
-            case "Très triste"  -> 1;
-            default             -> 0; // état inconnu
-        };
+        switch (etat.toLowerCase()) {
+            case "très heureux":
+            case "euphorique":
+                return 5;
+            case "heureux":
+            case "content":
+                return 4;
+            case "neutre":
+            case "normal":
+                return 3;
+            case "triste":
+            case "mélancolique":
+                return 2;
+            case "très triste":
+            case "déprimé":
+                return 1;
+            default:
+                return 3;
+        }
     }
 }
