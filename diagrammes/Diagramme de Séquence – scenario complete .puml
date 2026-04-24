@@ -1,0 +1,44 @@
+@startuml
+actor Etudiant
+participant "Interface CampusMind" as UI
+participant "Service Authentification" as Auth
+participant "Service Humeur" as Humeur
+participant "Moteur Analyse Emotionnelle" as Analyse
+participant "Service Recommandation" as Reco
+
+' === Connexion ===
+Etudiant -> UI : saisir email + mot de passe
+UI -> Auth : verifierCredentials(email, mdp)
+Auth --> UI : resultatAuthentification
+
+alt authentification réussie
+    UI --> Etudiant : accès autorisé
+
+    ' === Saisie humeur ===
+    Etudiant -> UI : saisir humeur (niveau, date)
+
+    loop chaque saisie humeur quotidienne
+        UI -> Humeur : enregistrerHumeur(data)
+        Humeur --> UI : confirmation enregistrement
+    end
+
+    ' === Analyse émotionnelle ===
+    UI -> Analyse : analyserHistorique(idEtudiant)
+    Analyse --> UI : score émotionnel + profil
+
+    opt état critique détecté
+        Analyse -> Reco : déclencher alerte prioritaire
+        Reco --> UI : recommandation urgente
+        UI --> Etudiant : notification soutien psychologique
+    end
+
+    ' === Recommandations normales ===
+    UI -> Reco : genererRecommandations(profil)
+    Reco --> UI : liste recommandations personnalisées
+    UI --> Etudiant : affichage recommandations
+
+else échec authentification
+    UI --> Etudiant : message erreur login
+end
+
+@enduml

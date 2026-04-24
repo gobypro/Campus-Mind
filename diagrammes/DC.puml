@@ -1,0 +1,96 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' =========================
+' 🔵 CLASSES COMMUNES
+' =========================
+class Utilisateur #ADD8E6 {
+  -id: int
+  -nom: String
+  -email: String
+  -motDePasse: String
+  +seConnecter()
+  +seDeconnecter()
+}
+
+class Etudiant #ADD8E6 {
+  -niveau: String
+  +saisirHumeur()
+  +consulterHistorique()
+}
+
+class Coach #ADD8E6 {
+  -specialite: String
+  +planifierSeance()
+}
+
+class Administrateur #ADD8E6 {
+  +gererUtilisateurs()
+  +consulterStatistiques()
+}
+
+Utilisateur <|-- Etudiant : hérite
+Utilisateur <|-- Coach : hérite
+Utilisateur <|-- Administrateur : hérite
+
+
+' =========================
+' 🟢 SUIVI ÉMOTIONNEL
+' =========================
+class Humeur #90EE90 {
+  -date: Date
+  -niveau: int
+  +enregistrer()
+}
+
+class Historique #90EE90 {
+  -listeHumeurs: List
+  +afficher()
+}
+
+class AnalyseEmotion #90EE90 {
+  +analyser()
+}
+
+Etudiant "1" -- "0..*" Humeur : saisit
+Etudiant "1" -- "1" Historique : possède
+Historique "1" *-- "0..*" Humeur : contient
+AnalyseEmotion "1" o-- "0..*" Humeur : analyse
+
+
+' =========================
+' 🟡 RECOMMANDATION
+' =========================
+class Recommandation #FFD700 {
+  -contenu: String
+  +generer()
+}
+
+Etudiant "1" -- "0..*" Recommandation : reçoit
+Recommandation --> AnalyseEmotion : utilise
+
+
+' =========================
+' 🟣 COACHING
+' =========================
+class SeanceCoaching #D8BFD8 {
+  -date: Date
+  -statut: String
+  +planifier()
+}
+
+Etudiant "1" -- "0..*" SeanceCoaching : demande
+Coach "1" -- "0..*" SeanceCoaching : gère
+
+
+' =========================
+' 🔴 ADMINISTRATION
+' =========================
+class Statistique #FFB6C1 {
+  +calculer()
+}
+
+Administrateur --> Utilisateur : gère
+Administrateur --> Statistique : consulte
+
+@enduml
