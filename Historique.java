@@ -21,6 +21,7 @@ public class Historique {
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
 
         for (Humeur h : humeurs) {
+            if (h == null) continue;
             int niveau = convertirEtatEnNiveau(h.getEtat());
             String dateFormatee = h.getDate() != null ? sdf.format(h.getDate()) : "Date inconnue   ";
             
@@ -51,11 +52,19 @@ public class Historique {
         }
 
         double somme = 0;
+        int count = 0;
         for (Humeur h : humeurs) {
+            if (h == null) continue;
             somme += convertirEtatEnNiveau(h.getEtat());
+            count++;
         }
         
-        double moyenne = somme / humeurs.size();
+        if (count == 0) {
+            System.out.println("Aucune donnée d'humeur valide pour analyser les tendances.");
+            return;
+        }
+        
+        double moyenne = somme / count;
         
         System.out.println("\n=== Analyse des Tendances ===");
         System.out.printf("Moyenne de l'humeur : %.2f/5%n", moyenne);
@@ -86,6 +95,9 @@ public class Historique {
      * @return Un niveau de 1 à 5
      */
     private int convertirEtatEnNiveau(String etat) {
+        if (etat == null || etat.trim().isEmpty()) {
+            return 3; // Par défaut : neutre
+        }
         switch (etat.toLowerCase()) {
             case "très heureux":
             case "euphorique":
