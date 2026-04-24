@@ -1,0 +1,11 @@
+# Fichiers privés
+fithub
+
+# Fichiers compilés Java
+*.class
+*.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
