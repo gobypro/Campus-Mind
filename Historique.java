@@ -17,21 +17,26 @@ public class Historique {
             return;
         }
 
-        System.out.println("\n📊 === Évolution de vos humeurs ===");
+        System.out.println("\n=== Évolution de vos humeurs ===");
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
 
         for (Humeur h : humeurs) {
             int niveau = convertirEtatEnNiveau(h.getEtat());
             String dateFormatee = h.getDate() != null ? sdf.format(h.getDate()) : "Date inconnue   ";
             
-            // Génération de la barre (ex: [====>     ] ou étoiles)
-            // On utilise ici les étoiles pour un rendu propre, plus le mot-clé
-            String barreEtoiles = "★".repeat(Math.max(0, niveau)) + "☆".repeat(Math.max(0, 5 - niveau));
+            // Génération de la barre (ex: [====> ])
+            String barre = "[";
+            if (niveau > 0) {
+                barre += "=".repeat(niveau - 1) + ">" + " ".repeat(5 - niveau);
+            } else {
+                barre += "     "; // Cas par défaut si le niveau est 0
+            }
+            barre += "]";
             
-            // Format: [Date] ★★★★☆ (4/5) - Heureux
-            System.out.printf("[%s] %s (%d/5) - %s%n", dateFormatee, barreEtoiles, niveau, h.getEtat());
+            // Affichage formaté : [Date] [===> ] (4/5) - Heureux
+            System.out.printf("[%s] %s (%d/5) - %s%n", dateFormatee, barre, niveau, h.getEtat());
         }
-        System.out.println("===================================\n");
+        System.out.println("================================\n");
     }
 
     /**
